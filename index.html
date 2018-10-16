@@ -118,13 +118,18 @@ var output = document.getElementById("output");
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/xcode");
 editor.session.setMode("ace/mode/ruby");
-        
-editor.on("input", function() {
+
+var refresh = function() {
     output.innerText = "";
     logbuf = "";
 
     rkexec(editor.getValue());
 
     output.innerHTML = logbuf;
-});
+};
+
+editor.on("input", refresh);
+</script>
+<script>
+    setTimeout(refresh, 500);
 </script>

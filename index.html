@@ -11,6 +11,21 @@
                 top: calc(50% - 290px);
                 left: calc(50% - 400px);
             }
+            #output {
+                position: absolute;
+
+                width: 750px;
+                height: 200px;
+
+                top: calc(50% - 290px + 380px);
+                left: calc(50% - 400px + 40px);
+
+                background-color: rgba(0,0,0, 0.5);
+
+                padding-left: 10px;
+                padding-top: 5px;
+                color: greenyellow;
+            }
 
             #title {
                 font-family: 'Bree Serif';
@@ -29,56 +44,87 @@
     </head>
     <body>
         <div id="title">Rookie playground</div>
-<div id="editor">class rookie_program {
+<div id="editor">class example_fibo {
     def main() {
-        print("Hello World!");
+        print(fib(10));
+    }
+        
+    def fib(x) {        
+        if (x == 0) return 0;
+        if (x == 1) return 1;
+        
+        return fib(x-1) + fib(x-2);
     }
 }
 </div>
+
+<div id="output">
+</div>
+
+<a href="https://github.com/pjc0247/rookie.lang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
     </body>
 </html>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/theme-xcode.js"></script>
 <script>
+    var logbuf = "";
     var prev_log = console.log;
     console.log = function(v) {
         prev_log("!" + v);
+        logbuf += v + "<br/>";
     };
 </script>
 <script src="rklang.js"></script>
 <script>
     console.log = prev_log;
-</script>>
+</script>
 
 <script>
+function strEncodeUTF16(str) {
+  var buf = new ArrayBuffer(str.length*2);
+  var bufView = new Uint16Array(buf);
+  for (var i=0, strLen=str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return bufView;
+}
+function strDecodeUTF16(str) {
+  var buf = new ArrayBuffer(str.length*2);
+  var readBuf = new Uint16Array(buf);
+  var writeBuf = new Uint8Array(buf);
+  for (var i=0, strLen=str.length; i < strLen; i++) {
+    writeBuf[i] = readBuf[i];
+  }
+  return writeBuf;
+}
+
 var _wasm_str = function(str) {
-    return allocate(intArrayFromString(str), 'i8', 0);
+    return allocate(strEncodeUTF16(str), 'i8', 0);
 }
 var _wasm_free = function(ptr) {
     _free(ptr);
 }
 
-
 var rkexec = function(src) {
     var ptr = _wasm_str(src);
-    _rk_compile_and_run(ptr);
+    _rk_exec(ptr);
     _wasm_free(ptr);
 }
 </script>
 
 <script>
+var output = document.getElementById("output");
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/xcode");
 editor.session.setMode("ace/mode/ruby");
         
 editor.on("input", function() {
-    let prev_log = console.log;
-    console.info = function(v) {
-        prev_log("!" + v);
-    };
+    output.innerText = "";
+    logbuf = "";
+
     rkexec(editor.getValue());
 
-    console.info = prev_log;
+    output.innerHTML = logbuf;
 });
 </script>

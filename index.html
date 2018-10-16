@@ -1,6 +1,8 @@
 <html>
     <head>
         <title>TryRookie</title>
+
+        <link rel="stylesheet" href="tab.css">
         <style type="text/css" media="screen">
             #editor { 
                 position: absolute;
@@ -30,23 +32,41 @@
             #title {
                 font-family: 'Bree Serif';
 
-                font-size: 40pt;
+                font-size: 45pt;
                 color: white;
 
                 margin-left: 17px;
             }
 
             body {
-                background-color: rgb(30, 30, 30);
+                background-color: black;
+                overflow: hidden;
             }
+            
+            video {
+                position: absolute;
+                width: 100%;
+                left: 0px;
+                top: 0px;
+                z-index: -1;
+                opacity: 0.3;
+            }
+            
         </style>
         <link href="https://fonts.googleapis.com/css?family=Bree+Serif|Varela+Round" rel="stylesheet">
     </head>
     <body>
-        <div id="title">Rookie playground</div>
+        <video src="bg_small.mp4" autoplay=true loop=true></video>
+        <div id="title">Rookie::playground</div>
+
+        <div class="tab">
+            <button class="tablinks" onclick="change_example('fibo')">Fibo</button>
+            <button class="tablinks" onclick="change_example('string')">String</button>
+            <button class="tablinks" onclick="change_example('object')">Object</button>
+        </div>
 <div id="editor">class example_fibo {
     @main
-    def main() {
+    static def main() {
         print(fib(10));
     }
         
@@ -68,12 +88,13 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/theme-xcode.js"></script>
+<script src="presets.js"></script>
 <script>
     var logbuf = "";
     var prev_log = console.log;
     console.log = function(v) {
-        prev_log("!" + v);
-        logbuf += v + "<br/>";
+        //prev_log("!" + v);
+        logbuf += v.replace("\\", "<br/>");
     };
 </script>
 <script src="rklang.js"></script>
@@ -121,6 +142,7 @@ editor.setTheme("ace/theme/xcode");
 editor.session.setMode("ace/mode/ruby");
 
 var refresh = function() {
+    console.log("REF");
     output.innerText = "";
     logbuf = "";
 

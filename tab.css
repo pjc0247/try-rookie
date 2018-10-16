@@ -6,8 +6,10 @@
 
     position: absolute;
     width: 798px;
-    top: calc(50% - 290px - 45px);
+    top: calc(50% - 290px - 49px);
     left: calc(50% - 400px);
+
+    border-bottom: 3px solid gray;
 }
 
 /* Style the buttons that are used to open the tab content */
@@ -19,6 +21,8 @@
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
+
+    font-family: 'Bree Serif' !important;
 }
 
 /* Change background color of buttons on hover */

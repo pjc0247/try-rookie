@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <title>TRY</title>
+        <style type="text/css" media="screen">
+            #editor { 
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        </style>
+    </head>
+    <body>
+<div id="editor">
+class rookie_program {
+    def main() {
+        print("Hello World!");
+    }
+}
+</div>
+    </body>
+</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js"></script>
+<script>
+    var prev_log = console.log;
+    console.log = function(v) {
+        prev_log("!" + v);
+    };
+</script>
+<script src="rklang.js"></script>
+<script>
+    console.log = prev_log;
+</script>>
+
+<script>
+var _wasm_str = function(str) {
+    return allocate(intArrayFromString(str), 'i8', 0);
+}
+var _wasm_free = function(ptr) {
+    _free(ptr);
+}
+
+
+var rkexec = function(src) {
+    var ptr = _wasm_str(src);
+    _rk_compile_and_run(ptr);
+    _wasm_free(ptr);
+}
+</script>
+
+<script>
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/monokai");
+editor.session.setMode("ace/mode/javascript");
+        
+editor.on("input", function() {
+    let prev_log = console.log;
+    console.info = function(v) {
+        prev_log("!" + v);
+    };
+    rkexec(editor.getValue());
+
+    console.info = prev_log;
+});
+</script>

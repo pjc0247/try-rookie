@@ -96,11 +96,11 @@
     var logbuf = "";
     var prev_log = console.log;
     console.log = function(v) {
-        prev_log("!" + v);
+        //prev_log("!" + v);
         logbuf += v.replace("\\", "<br/>");
     };
 </script>
-<script src="www/rklang.js"></script>
+<script src="rklang.js"></script>
 <script>
     console.log = prev_log;
 </script>

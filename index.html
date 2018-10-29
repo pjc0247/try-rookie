@@ -96,7 +96,7 @@
     var logbuf = "";
     var prev_log = console.log;
     console.log = function(v) {
-        //prev_log("!" + v);
+        prev_log("!" + v);
         logbuf += v.replace("\\", "<br/>");
     };
 </script>

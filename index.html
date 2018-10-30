@@ -66,6 +66,7 @@
             <button class="tablinks" onclick="change_example('fibo')">Fibo</button>
             <button class="tablinks" onclick="change_example('string')">String</button>
             <button class="tablinks" onclick="change_example('object')">Object</button>
+            <button class="tablinks" onclick="change_example('dictionary')">Dictionary</button>
         </div>
 <div id="editor">class example_fibo {
     @main
@@ -73,7 +74,7 @@
         print(fib(10));
     }
         
-    def fib(x) {        
+    static def fib(x) {        
         if (x == 0) return 0;
         if (x == 1) return 1;
         

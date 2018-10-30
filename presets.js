@@ -26,27 +26,48 @@ var presets = {
 }`,
 
 
-    object: `class example_object {
-    @main
-    static def main() {
-        f = foo.new();
-        f.v = 1234;
-        f.say_hello();
-
-        f = foo.new();
-        f.v = 5678;
-        f.say_hello();
+    object: `class wasm_workaround { static def print(msg) { for (i=0;i<msg.length();i++) { puts(msg[i]); } puts("<");puts("b");puts("r");puts("/");puts(">"); } }
+    
+class person {
+    def say_hello() {
+        wasm_workaround.print("Hello");
+    }
+}
+class engineer : person {
+    def say_hello() {
+        wasm_workaround.print("HelloWorld");
     }
 }
 
-class foo {
-    def say_hello() {
-        hello = "hello";
+class object_test {
+    @main
+    static def main() {
+        // Hello
+        person.new().say_hello();
 
-        for (i=0;i<hello.length();i++)
-            print(hello[i]);
+        // HelloWorld
+        engineer.new().say_hello();
+    }
+}
+`,
 
-        print(this.v);
+    dictionary: `class wasm_workaround { static def print(msg) { for (i=0;i<msg.length();i++) { puts(msg[i]); } puts("<");puts("b");puts("r");puts("/");puts(">"); } }
+
+class dict_test {
+    @main
+    static def main() {
+        d = {
+            a: 1,
+            b: 2,
+            c: "Hello"
+        };
+
+        for (k,v in d) {
+            a = k.to_string();
+            b = v.to_string();
+            wasm_workaround.print(a);
+            wasm_workaround.print(b);
+        }
     }
 }
 `

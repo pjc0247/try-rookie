@@ -5,7 +5,7 @@ var presets = {
         print(fib(10));
     }
 
-    def fib(x) {        
+    static def fib(x) {        
         if (x == 0) return 0;
         if (x == 1) return 1;
         

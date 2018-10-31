@@ -128,7 +128,7 @@ function strDecodeUTF16(str) {
 }
 
 var _wasm_str = function(str) {
-    return allocate(strEncodeUTF16(str), 'i8', 0);
+    return allocate(intArrayFromString(str), 'i8', 0);
 }
 var _wasm_free = function(ptr) {
     _free(ptr);

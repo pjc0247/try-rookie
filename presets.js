@@ -20,8 +20,7 @@ var presets = {
         b = "world!";
         hello_world = a.append(b);
 
-        for (i=0;i<hello_world.length();i++)
-            print(hello_world[i]);
+        puts (hello_world);
     }
 }`,
 

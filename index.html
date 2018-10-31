@@ -101,7 +101,7 @@
         logbuf += v.replace("\\", "<br/>");
     };
 </script>
-<script src="rklang.js"></script>
+<script src="www/rklang.js"></script>
 <script>
     console.log = prev_log;
 </script>
@@ -173,9 +173,9 @@ editor.on("input", function() {
     clearTimeout(ref_timer);
     ref_timer = setTimeout(function() {
         refresh();
-    }, 500);
+    }, 333);
 });
 </script>
 <script>
-    setTimeout(refresh, 500);
+    setTimeout(refresh, 1500);
 </script>

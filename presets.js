@@ -58,7 +58,7 @@ class object_test {
         };
 
         for (k,v in person) {
-            puts (``{{k}}: {{v}}``);
+            puts (\`{{k}}: {{v}}\`);
         }
     }
 }

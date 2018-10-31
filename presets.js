@@ -25,16 +25,14 @@ var presets = {
 }`,
 
 
-    object: `class wasm_workaround { static def print(msg) { for (i=0;i<msg.length();i++) { puts(msg[i]); } puts("<");puts("b");puts("r");puts("/");puts(">"); } }
-    
-class person {
+    object: `class person {
     def say_hello() {
-        wasm_workaround.print("Hello");
+        puts ("Hello");
     }
 }
 class engineer : person {
     def say_hello() {
-        wasm_workaround.print("HelloWorld");
+        puts ("HelloWorld");
     }
 }
 
@@ -50,22 +48,18 @@ class object_test {
 }
 `,
 
-    dictionary: `class wasm_workaround { static def print(msg) { for (i=0;i<msg.length();i++) { puts(msg[i]); } puts("<");puts("b");puts("r");puts("/");puts(">"); } }
-
-class dict_test {
+    dictionary: `class dict_test {
     @main
     static def main() {
-        d = {
-            a: 1,
-            b: 2,
-            c: "Hello"
+        person = {
+            name : "Jinwoo",
+            age  : 21,
+            hobby: ["Game", "AVR", "Buying Thinkpad X1"]
         };
 
-        for (k,v in d) {
-            a = k.to_string();
-            b = v.to_string();
-            wasm_workaround.print(a);
-            wasm_workaround.print(b);
+        for (k,v in person) {
+            puts (k);
+            puts (v);
         }
     }
 }
@@ -75,4 +69,5 @@ class dict_test {
 
 var change_example = function(id) {
     editor.setValue(presets[id], -1);
+    refresh();
 }

@@ -167,7 +167,14 @@ var refresh = function() {
     output.innerHTML = logbuf;
 };
 
-editor.on("input", refresh);
+var ref_timer = null;
+
+editor.on("input", function() {
+    clearTimeout(ref_timer);
+    ref_timer = setTimeout(function() {
+        refresh();
+    }, 500);
+});
 </script>
 <script>
     setTimeout(refresh, 500);

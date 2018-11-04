@@ -1635,7 +1635,7 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 50176;
+STATICTOP = STATIC_BASE + 50256;
 /* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__sub_I_syntax_cpp() } }, { func: function() { __GLOBAL__sub_I_debugger_cpp() } }, { func: function() { __GLOBAL__sub_I_gc_cpp() } }, { func: function() { __GLOBAL__sub_I_binding_cpp() } }, { func: function() { __GLOBAL__sub_I_value_cpp() } }, { func: function() { __GLOBAL__sub_I_runner_cpp() } }, { func: function() { __GLOBAL__sub_I_compiler_cpp() } }, { func: function() { __GLOBAL__sub_I_stdafx_cpp() } }, { func: function() { __GLOBAL__sub_I_sig2hash_cpp() } }, { func: function() { __GLOBAL__sub_I_c_interface_cpp() } }, { func: function() { __GLOBAL__sub_I_lexer_cpp() } }, { func: function() { __GLOBAL__sub_I_exe_context_cpp() } }, { func: function() { __GLOBAL__sub_I_sexper_cpp() } }, { func: function() { __GLOBAL__sub_I_main_cpp() } }, { func: function() { __GLOBAL__sub_I_object_cpp() } }, { func: function() { ___emscripten_environ_constructor() } });
 
 
@@ -1644,7 +1644,7 @@ STATICTOP = STATIC_BASE + 50176;
 
 
 
-var STATIC_BUMP = 50176;
+var STATIC_BUMP = 50256;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 
@@ -2605,9 +2605,9 @@ function intArrayToString(array) {
 
 
 
-Module['wasmTableSize'] = 1982;
+Module['wasmTableSize'] = 1984;
 
-Module['wasmMaxTableSize'] = 1982;
+Module['wasmMaxTableSize'] = 1984;
 
 function invoke_diii(index,a1,a2,a3) {
   var sp = stackSave();

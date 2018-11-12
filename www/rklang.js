@@ -1635,8 +1635,8 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 60544;
-/* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__sub_I_lexer_cpp() } }, { func: function() { ___emscripten_environ_constructor() } }, { func: function() { __GLOBAL__sub_I_json_cpp() } }, { func: function() { __GLOBAL__sub_I_object_cpp() } }, { func: function() { __GLOBAL__sub_I_dictionary_cpp() } }, { func: function() { __GLOBAL__sub_I_string_cpp() } }, { func: function() { __GLOBAL__sub_I_array_cpp() } }, { func: function() { __GLOBAL__sub_I_main_cpp() } }, { func: function() { __GLOBAL__sub_I_sexper_cpp() } }, { func: function() { __GLOBAL__sub_I_exe_context_cpp() } }, { func: function() { __GLOBAL__sub_I_debugger_cpp() } }, { func: function() { __GLOBAL__sub_I_c_interface_cpp() } }, { func: function() { __GLOBAL__sub_I_sig2hash_cpp() } }, { func: function() { __GLOBAL__sub_I_stdafx_cpp() } }, { func: function() { __GLOBAL__sub_I_compiler_cpp() } }, { func: function() { __GLOBAL__sub_I_runner_cpp() } }, { func: function() { __GLOBAL__sub_I_value_cpp() } }, { func: function() { __GLOBAL__sub_I_binding_cpp() } }, { func: function() { __GLOBAL__sub_I_gc_cpp() } });
+STATICTOP = STATIC_BASE + 61120;
+/* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__sub_I_main_cpp() } }, { func: function() { ___emscripten_environ_constructor() } }, { func: function() { __GLOBAL__sub_I_json_cpp() } }, { func: function() { __GLOBAL__sub_I_object_cpp() } }, { func: function() { __GLOBAL__sub_I_dictionary_cpp() } }, { func: function() { __GLOBAL__sub_I_string_cpp() } }, { func: function() { __GLOBAL__sub_I_array_cpp() } }, { func: function() { __GLOBAL__sub_I_loop_node_cpp() } }, { func: function() { __GLOBAL__sub_I_oop_fundamental_node_cpp() } }, { func: function() { __GLOBAL__sub_I_basic_node_cpp() } }, { func: function() { __GLOBAL__sub_I_try_catch_node_cpp() } }, { func: function() { __GLOBAL__sub_I_syntax_node_cpp() } }, { func: function() { __GLOBAL__sub_I_debugger_cpp() } }, { func: function() { __GLOBAL__sub_I_sexper_cpp() } }, { func: function() { __GLOBAL__sub_I_exe_context_cpp() } }, { func: function() { __GLOBAL__sub_I_lexer_cpp() } }, { func: function() { __GLOBAL__sub_I_c_interface_cpp() } }, { func: function() { __GLOBAL__sub_I_sig2hash_cpp() } }, { func: function() { __GLOBAL__sub_I_stdafx_cpp() } }, { func: function() { __GLOBAL__sub_I_compiler_cpp() } }, { func: function() { __GLOBAL__sub_I_runner_cpp() } }, { func: function() { __GLOBAL__sub_I_value_cpp() } }, { func: function() { __GLOBAL__sub_I_binding_cpp() } }, { func: function() { __GLOBAL__sub_I_gc_cpp() } });
 
 
 
@@ -1644,7 +1644,7 @@ STATICTOP = STATIC_BASE + 60544;
 
 
 
-var STATIC_BUMP = 60544;
+var STATIC_BUMP = 61120;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 
@@ -1685,150 +1685,6 @@ function copyTempDouble(ptr) {
 
 // {{PRE_LIBRARY}}
 
-
-  function __ZN10block_node10push_localERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE() {
-  err('missing function: _ZN10block_node10push_localERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE'); abort(-1);
-  }
-
-  function __ZN10block_nodeC1ERK6stoken() {
-  err('missing function: _ZN10block_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN10catch_node5blockEv() {
-  err('missing function: _ZN10catch_node5blockEv'); abort(-1);
-  }
-
-  function __ZN10catch_node9exceptionEv() {
-  err('missing function: _ZN10catch_node9exceptionEv'); abort(-1);
-  }
-
-  function __ZN10catch_nodeC1ERK6stoken() {
-  err('missing function: _ZN10catch_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN10class_nodeC1ERK6stoken() {
-  err('missing function: _ZN10class_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN10field_nodeC1ERK6stoken() {
-  err('missing function: _ZN10field_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN10throw_node9exceptionEv() {
-  err('missing function: _ZN10throw_node9exceptionEv'); abort(-1);
-  }
-
-  function __ZN10throw_nodeC1ERK6stoken() {
-  err('missing function: _ZN10throw_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN10while_nodeC1ERK6stoken() {
-  err('missing function: _ZN10while_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN11method_node15push_annotationEP15annotation_node() {
-  err('missing function: _ZN11method_node15push_annotationEP15annotation_node'); abort(-1);
-  }
-
-  function __ZN11method_nodeC1ERK6stoken() {
-  err('missing function: _ZN11method_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN11params_nodeC1ERK6stoken() {
-  err('missing function: _ZN11params_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN11syntax_node23nearest_incomplete_nodeEv() {
-  err('missing function: _ZN11syntax_node23nearest_incomplete_nodeEv'); abort(-1);
-  }
-
-  function __ZN11syntax_node6appendEPS_b() {
-  err('missing function: _ZN11syntax_node6appendEPS_b'); abort(-1);
-  }
-
-  function __ZN11syntax_node6removeEPS_() {
-  err('missing function: _ZN11syntax_node6removeEPS_'); abort(-1);
-  }
-
-  function __ZN11syntax_nodeC2ERK6stoken() {
-  err('missing function: _ZN11syntax_nodeC2ERK6stoken'); abort(-1);
-  }
-
-  function __ZN12foreach_node10begin_varsEv() {
-  err('missing function: _ZN12foreach_node10begin_varsEv'); abort(-1);
-  }
-
-  function __ZN12foreach_node8end_varsEv() {
-  err('missing function: _ZN12foreach_node8end_varsEv'); abort(-1);
-  }
-
-  function __ZN12foreach_nodeC1ERK6stoken() {
-  err('missing function: _ZN12foreach_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN12inherit_nodeC1ERK6stoken() {
-  err('missing function: _ZN12inherit_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN15annotation_nodeC1ERK6stoken() {
-  err('missing function: _ZN15annotation_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN8for_nodeC1ERK6stoken() {
-  err('missing function: _ZN8for_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN8try_nodeC1ERK6stoken() {
-  err('missing function: _ZN8try_nodeC1ERK6stoken'); abort(-1);
-  }
-
-  function __ZN9root_nodeC1Ev() {
-  err('missing function: _ZN9root_nodeC1Ev'); abort(-1);
-  }
-
-  function __ZNK10class_node7parentsEv() {
-  err('missing function: _ZNK10class_node7parentsEv'); abort(-1);
-  }
-
-  function __ZNK10while_node4bodyEv() {
-  err('missing function: _ZNK10while_node4bodyEv'); abort(-1);
-  }
-
-  function __ZNK10while_node4condEv() {
-  err('missing function: _ZNK10while_node4condEv'); abort(-1);
-  }
-
-  function __ZNK11syntax_node11is_completeEv() {
-  err('missing function: _ZNK11syntax_node11is_completeEv'); abort(-1);
-  }
-
-  function __ZNK11syntax_node17find_upward_untilE11syntax_type() {
-  err('missing function: _ZNK11syntax_node17find_upward_untilE11syntax_type'); abort(-1);
-  }
-
-  function __ZNK12foreach_node4bodyEv() {
-  err('missing function: _ZNK12foreach_node4bodyEv'); abort(-1);
-  }
-
-  function __ZNK12foreach_node5rightEv() {
-  err('missing function: _ZNK12foreach_node5rightEv'); abort(-1);
-  }
-
-  function __ZNK8for_node4bodyEv() {
-  err('missing function: _ZNK8for_node4bodyEv'); abort(-1);
-  }
-
-  function __ZNK8for_node4condEv() {
-  err('missing function: _ZNK8for_node4condEv'); abort(-1);
-  }
-
-  function __ZNK8for_node4initEv() {
-  err('missing function: _ZNK8for_node4initEv'); abort(-1);
-  }
-
-  function __ZNK8for_node9incrementEv() {
-  err('missing function: _ZNK8for_node9incrementEv'); abort(-1);
-  }
 
   function ___assert_fail(condition, filename, line, func) {
       abort('Assertion failed: ' + Pointer_stringify(condition) + ', at: ' + [filename ? Pointer_stringify(filename) : 'unknown filename', line, func ? Pointer_stringify(func) : 'unknown function']);
@@ -2707,22 +2563,6 @@ function copyTempDouble(ptr) {
     }function _strftime_l(s, maxsize, format, tm) {
       return _strftime(s, maxsize, format, tm); // no locale support yet
     }
-
-  function __ZTI10catch_node() {
-  err('missing function: _ZTI10catch_node'); abort(-1);
-  }
-
-  function __ZTI11method_node() {
-  err('missing function: _ZTI11method_node'); abort(-1);
-  }
-
-  function __ZTI12foreach_node() {
-  err('missing function: _ZTI12foreach_node'); abort(-1);
-  }
-
-  function __ZTI9root_node() {
-  err('missing function: _ZTI9root_node'); abort(-1);
-  }
 if (ENVIRONMENT_IS_NODE) {
     _emscripten_get_now = function _emscripten_get_now_actual() {
       var t = process['hrtime']();
@@ -3129,13 +2969,14 @@ function invoke_viiiiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a1
 
 Module.asmGlobalArg = {};
 
-Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "invoke_dii": invoke_dii, "invoke_diii": invoke_diii, "invoke_fiii": invoke_fiii, "invoke_i": invoke_i, "invoke_ii": invoke_ii, "invoke_iidi": invoke_iidi, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiid": invoke_iiiiid, "invoke_iiiiii": invoke_iiiiii, "invoke_iiiiiid": invoke_iiiiiid, "invoke_iiiiiii": invoke_iiiiiii, "invoke_iiiiiiii": invoke_iiiiiiii, "invoke_iiiiiiiii": invoke_iiiiiiiii, "invoke_iiiiiiiiiii": invoke_iiiiiiiiiii, "invoke_iiiiiiiiiiii": invoke_iiiiiiiiiiii, "invoke_iiiiiiiiiiiii": invoke_iiiiiiiiiiiii, "invoke_iiiiij": invoke_iiiiij, "invoke_iij": invoke_iij, "invoke_jiiii": invoke_jiiii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_viii": invoke_viii, "invoke_viiii": invoke_viiii, "invoke_viiiii": invoke_viiiii, "invoke_viiiiii": invoke_viiiiii, "invoke_viiiiiii": invoke_viiiiiii, "invoke_viiiiiiiiii": invoke_viiiiiiiiii, "invoke_viiiiiiiiiiiiiii": invoke_viiiiiiiiiiiiiii, "__ZN10block_node10push_localERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN10block_node10push_localERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "__ZN10block_nodeC1ERK6stoken": __ZN10block_nodeC1ERK6stoken, "__ZN10catch_node5blockEv": __ZN10catch_node5blockEv, "__ZN10catch_node9exceptionEv": __ZN10catch_node9exceptionEv, "__ZN10catch_nodeC1ERK6stoken": __ZN10catch_nodeC1ERK6stoken, "__ZN10class_nodeC1ERK6stoken": __ZN10class_nodeC1ERK6stoken, "__ZN10field_nodeC1ERK6stoken": __ZN10field_nodeC1ERK6stoken, "__ZN10throw_node9exceptionEv": __ZN10throw_node9exceptionEv, "__ZN10throw_nodeC1ERK6stoken": __ZN10throw_nodeC1ERK6stoken, "__ZN10while_nodeC1ERK6stoken": __ZN10while_nodeC1ERK6stoken, "__ZN11method_node15push_annotationEP15annotation_node": __ZN11method_node15push_annotationEP15annotation_node, "__ZN11method_nodeC1ERK6stoken": __ZN11method_nodeC1ERK6stoken, "__ZN11params_nodeC1ERK6stoken": __ZN11params_nodeC1ERK6stoken, "__ZN11syntax_node23nearest_incomplete_nodeEv": __ZN11syntax_node23nearest_incomplete_nodeEv, "__ZN11syntax_node6appendEPS_b": __ZN11syntax_node6appendEPS_b, "__ZN11syntax_node6removeEPS_": __ZN11syntax_node6removeEPS_, "__ZN11syntax_nodeC2ERK6stoken": __ZN11syntax_nodeC2ERK6stoken, "__ZN12foreach_node10begin_varsEv": __ZN12foreach_node10begin_varsEv, "__ZN12foreach_node8end_varsEv": __ZN12foreach_node8end_varsEv, "__ZN12foreach_nodeC1ERK6stoken": __ZN12foreach_nodeC1ERK6stoken, "__ZN12inherit_nodeC1ERK6stoken": __ZN12inherit_nodeC1ERK6stoken, "__ZN15annotation_nodeC1ERK6stoken": __ZN15annotation_nodeC1ERK6stoken, "__ZN8for_nodeC1ERK6stoken": __ZN8for_nodeC1ERK6stoken, "__ZN8try_nodeC1ERK6stoken": __ZN8try_nodeC1ERK6stoken, "__ZN9root_nodeC1Ev": __ZN9root_nodeC1Ev, "__ZNK10class_node7parentsEv": __ZNK10class_node7parentsEv, "__ZNK10while_node4bodyEv": __ZNK10while_node4bodyEv, "__ZNK10while_node4condEv": __ZNK10while_node4condEv, "__ZNK11syntax_node11is_completeEv": __ZNK11syntax_node11is_completeEv, "__ZNK11syntax_node17find_upward_untilE11syntax_type": __ZNK11syntax_node17find_upward_untilE11syntax_type, "__ZNK12foreach_node4bodyEv": __ZNK12foreach_node4bodyEv, "__ZNK12foreach_node5rightEv": __ZNK12foreach_node5rightEv, "__ZNK8for_node4bodyEv": __ZNK8for_node4bodyEv, "__ZNK8for_node4condEv": __ZNK8for_node4condEv, "__ZNK8for_node4initEv": __ZNK8for_node4initEv, "__ZNK8for_node9incrementEv": __ZNK8for_node9incrementEv, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___assert_fail": ___assert_fail, "___buildEnvironment": ___buildEnvironment, "___cxa_allocate_exception": ___cxa_allocate_exception, "___cxa_begin_catch": ___cxa_begin_catch, "___cxa_end_catch": ___cxa_end_catch, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_find_matching_catch_2": ___cxa_find_matching_catch_2, "___cxa_find_matching_catch_3": ___cxa_find_matching_catch_3, "___cxa_find_matching_catch_6": ___cxa_find_matching_catch_6, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___cxa_rethrow": ___cxa_rethrow, "___cxa_throw": ___cxa_throw, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___map_file": ___map_file, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___syscall91": ___syscall91, "___unlock": ___unlock, "__addDays": __addDays, "__arraySum": __arraySum, "__isLeapYear": __isLeapYear, "_abort": _abort, "_clock_gettime": _clock_gettime, "_emscripten_get_now": _emscripten_get_now, "_emscripten_get_now_is_monotonic": _emscripten_get_now_is_monotonic, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_getenv": _getenv, "_llvm_eh_typeid_for": _llvm_eh_typeid_for, "_llvm_stackrestore": _llvm_stackrestore, "_llvm_stacksave": _llvm_stacksave, "_llvm_trap": _llvm_trap, "_localtime": _localtime, "_localtime_r": _localtime_r, "_pthread_cond_wait": _pthread_cond_wait, "_pthread_getspecific": _pthread_getspecific, "_pthread_key_create": _pthread_key_create, "_pthread_once": _pthread_once, "_pthread_setspecific": _pthread_setspecific, "_strftime": _strftime, "_strftime_l": _strftime_l, "_tzset": _tzset, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX, "__ZTI10catch_node": __ZTI10catch_node, "__ZTI11method_node": __ZTI11method_node, "__ZTI12foreach_node": __ZTI12foreach_node, "__ZTI9root_node": __ZTI9root_node };
+Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "invoke_dii": invoke_dii, "invoke_diii": invoke_diii, "invoke_fiii": invoke_fiii, "invoke_i": invoke_i, "invoke_ii": invoke_ii, "invoke_iidi": invoke_iidi, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiid": invoke_iiiiid, "invoke_iiiiii": invoke_iiiiii, "invoke_iiiiiid": invoke_iiiiiid, "invoke_iiiiiii": invoke_iiiiiii, "invoke_iiiiiiii": invoke_iiiiiiii, "invoke_iiiiiiiii": invoke_iiiiiiiii, "invoke_iiiiiiiiiii": invoke_iiiiiiiiiii, "invoke_iiiiiiiiiiii": invoke_iiiiiiiiiiii, "invoke_iiiiiiiiiiiii": invoke_iiiiiiiiiiiii, "invoke_iiiiij": invoke_iiiiij, "invoke_iij": invoke_iij, "invoke_jiiii": invoke_jiiii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_viii": invoke_viii, "invoke_viiii": invoke_viiii, "invoke_viiiii": invoke_viiiii, "invoke_viiiiii": invoke_viiiiii, "invoke_viiiiiii": invoke_viiiiiii, "invoke_viiiiiiiiii": invoke_viiiiiiiiii, "invoke_viiiiiiiiiiiiiii": invoke_viiiiiiiiiiiiiii, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___assert_fail": ___assert_fail, "___buildEnvironment": ___buildEnvironment, "___cxa_allocate_exception": ___cxa_allocate_exception, "___cxa_begin_catch": ___cxa_begin_catch, "___cxa_end_catch": ___cxa_end_catch, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_find_matching_catch_2": ___cxa_find_matching_catch_2, "___cxa_find_matching_catch_3": ___cxa_find_matching_catch_3, "___cxa_find_matching_catch_6": ___cxa_find_matching_catch_6, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___cxa_rethrow": ___cxa_rethrow, "___cxa_throw": ___cxa_throw, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___map_file": ___map_file, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___syscall91": ___syscall91, "___unlock": ___unlock, "__addDays": __addDays, "__arraySum": __arraySum, "__isLeapYear": __isLeapYear, "_abort": _abort, "_clock_gettime": _clock_gettime, "_emscripten_get_now": _emscripten_get_now, "_emscripten_get_now_is_monotonic": _emscripten_get_now_is_monotonic, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_getenv": _getenv, "_llvm_eh_typeid_for": _llvm_eh_typeid_for, "_llvm_stackrestore": _llvm_stackrestore, "_llvm_stacksave": _llvm_stacksave, "_llvm_trap": _llvm_trap, "_localtime": _localtime, "_localtime_r": _localtime_r, "_pthread_cond_wait": _pthread_cond_wait, "_pthread_getspecific": _pthread_getspecific, "_pthread_key_create": _pthread_key_create, "_pthread_once": _pthread_once, "_pthread_setspecific": _pthread_setspecific, "_strftime": _strftime, "_strftime_l": _strftime_l, "_tzset": _tzset, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX };
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (Module.asmGlobalArg, Module.asmLibraryArg, buffer);
 
 Module["asm"] = asm;
 var __GLOBAL__sub_I_array_cpp = Module["__GLOBAL__sub_I_array_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_array_cpp"].apply(null, arguments) };
+var __GLOBAL__sub_I_basic_node_cpp = Module["__GLOBAL__sub_I_basic_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_basic_node_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_binding_cpp = Module["__GLOBAL__sub_I_binding_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_binding_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_c_interface_cpp = Module["__GLOBAL__sub_I_c_interface_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_c_interface_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_compiler_cpp = Module["__GLOBAL__sub_I_compiler_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_compiler_cpp"].apply(null, arguments) };
@@ -3145,13 +2986,17 @@ var __GLOBAL__sub_I_exe_context_cpp = Module["__GLOBAL__sub_I_exe_context_cpp"] 
 var __GLOBAL__sub_I_gc_cpp = Module["__GLOBAL__sub_I_gc_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_gc_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_json_cpp = Module["__GLOBAL__sub_I_json_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_json_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_lexer_cpp = Module["__GLOBAL__sub_I_lexer_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_lexer_cpp"].apply(null, arguments) };
+var __GLOBAL__sub_I_loop_node_cpp = Module["__GLOBAL__sub_I_loop_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_loop_node_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_main_cpp = Module["__GLOBAL__sub_I_main_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_main_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_object_cpp = Module["__GLOBAL__sub_I_object_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_object_cpp"].apply(null, arguments) };
+var __GLOBAL__sub_I_oop_fundamental_node_cpp = Module["__GLOBAL__sub_I_oop_fundamental_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_oop_fundamental_node_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_runner_cpp = Module["__GLOBAL__sub_I_runner_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_runner_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_sexper_cpp = Module["__GLOBAL__sub_I_sexper_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_sexper_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_sig2hash_cpp = Module["__GLOBAL__sub_I_sig2hash_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_sig2hash_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_stdafx_cpp = Module["__GLOBAL__sub_I_stdafx_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_stdafx_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_string_cpp = Module["__GLOBAL__sub_I_string_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_string_cpp"].apply(null, arguments) };
+var __GLOBAL__sub_I_syntax_node_cpp = Module["__GLOBAL__sub_I_syntax_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_syntax_node_cpp"].apply(null, arguments) };
+var __GLOBAL__sub_I_try_catch_node_cpp = Module["__GLOBAL__sub_I_try_catch_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_try_catch_node_cpp"].apply(null, arguments) };
 var __GLOBAL__sub_I_value_cpp = Module["__GLOBAL__sub_I_value_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_value_cpp"].apply(null, arguments) };
 var ___cxa_can_catch = Module["___cxa_can_catch"] = function() {  return Module["asm"]["___cxa_can_catch"].apply(null, arguments) };
 var ___cxa_is_pointer_type = Module["___cxa_is_pointer_type"] = function() {  return Module["asm"]["___cxa_is_pointer_type"].apply(null, arguments) };

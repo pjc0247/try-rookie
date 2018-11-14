@@ -62,8 +62,24 @@ class object_test {
         }
     }
 }
-`
+`,
+    json: `class json_test {
+    @main
+    static def main() {
+        p = "{"name": "Jinwoo", "age": 24}";
+        j = json.parse(p);
 
+        puts (j.name);
+        puts (j.age);
+
+        o = object.new();
+        o.name = "Jinwoo";
+        o.age = 24;
+
+        puts (json.stringify(o));
+    }
+}
+`
 }
 
 var change_example = function(id) {

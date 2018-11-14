@@ -18,6 +18,9 @@ var presets = {
     static def main() {
         a = "hello ";
         b = "world!";
+
+        # Also supports
+        # a += b;
         hello_world = a.append(b);
 
         puts (hello_world);
@@ -39,10 +42,10 @@ class engineer : person {
 class object_test {
     @main
     static def main() {
-        // Hello
+        # Hello
         person.new().say_hello();
 
-        // HelloWorld
+        # HelloWorld
         engineer.new().say_hello();
     }
 }
@@ -70,6 +73,7 @@ class object_test {
         stringify();
     }
     
+    # Creates an object from the JSON string.
     static def parse() {
         p = "{"name": "Jinwoo", "age": 24}";
         j = json.parse(p);
@@ -77,6 +81,7 @@ class object_test {
         puts (j.name);
         puts (j.age);
     }
+    # Converts an object into the JSON string.
     static def stringify() {
         o = object.new();
         o.name = "Jinwoo";

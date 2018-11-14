@@ -66,12 +66,18 @@ class object_test {
     json: `class json_test {
     @main
     static def main() {
+        parse();
+        stringify();
+    }
+    
+    static def parse() {
         p = "{"name": "Jinwoo", "age": 24}";
         j = json.parse(p);
 
         puts (j.name);
         puts (j.age);
-
+    }
+    static def stringify() {
         o = object.new();
         o.name = "Jinwoo";
         o.age = 24;

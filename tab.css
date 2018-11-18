@@ -6,7 +6,7 @@
 
     position: absolute;
     width: calc(48vw - 2px);
-    top: calc(50% - 13.5vw - 49px);
+    top: calc(50% - 13.5vw);
     left: calc(50% - 24vw);
 
     border-bottom: 3px solid gray;

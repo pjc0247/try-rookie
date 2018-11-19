@@ -1635,7 +1635,7 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 65296;
+STATICTOP = STATIC_BASE + 65360;
 /* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__sub_I_main_cpp() } }, { func: function() { ___emscripten_environ_constructor() } }, { func: function() { __GLOBAL__sub_I_json_cpp() } }, { func: function() { __GLOBAL__sub_I_object_cpp() } }, { func: function() { __GLOBAL__sub_I_dictionary_cpp() } }, { func: function() { __GLOBAL__sub_I_type_cpp() } }, { func: function() { __GLOBAL__sub_I_string_cpp() } }, { func: function() { __GLOBAL__sub_I_array_cpp() } }, { func: function() { __GLOBAL__sub_I_loop_node_cpp() } }, { func: function() { __GLOBAL__sub_I_oop_fundamental_node_cpp() } }, { func: function() { __GLOBAL__sub_I_basic_node_cpp() } }, { func: function() { __GLOBAL__sub_I_try_catch_node_cpp() } }, { func: function() { __GLOBAL__sub_I_syntax_node_cpp() } }, { func: function() { __GLOBAL__sub_I_debugger_cpp() } }, { func: function() { __GLOBAL__sub_I_sexper_cpp() } }, { func: function() { __GLOBAL__sub_I_exe_context_cpp() } }, { func: function() { __GLOBAL__sub_I_lexer_cpp() } }, { func: function() { __GLOBAL__sub_I_c_interface_cpp() } }, { func: function() { __GLOBAL__sub_I_sig2hash_cpp() } }, { func: function() { __GLOBAL__sub_I_stdafx_cpp() } }, { func: function() { __GLOBAL__sub_I_compiler_cpp() } }, { func: function() { __GLOBAL__sub_I_runner_cpp() } }, { func: function() { __GLOBAL__sub_I_value_cpp() } }, { func: function() { __GLOBAL__sub_I_binding_cpp() } }, { func: function() { __GLOBAL__sub_I_gc_cpp() } });
 
 
@@ -1644,7 +1644,7 @@ STATICTOP = STATIC_BASE + 65296;
 
 
 
-var STATIC_BUMP = 65296;
+var STATIC_BUMP = 65360;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 

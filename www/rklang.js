@@ -1751,9 +1751,12 @@ function copyTempDouble(ptr) {
         if (!adjusted || EXCEPTIONS.infos[adjusted]) return adjusted;
         for (var key in EXCEPTIONS.infos) {
           var ptr = +key; // the iteration key is a string, and if we throw this, it must be an integer as that is what we look for
-          var info = EXCEPTIONS.infos[ptr];
-          if (info.adjusted === adjusted) {
-            return ptr;
+          var adj = EXCEPTIONS.infos[ptr].adjusted;
+          var len = adj.length;
+          for (var i = 0; i < len; i++) {
+            if (adj[i] === adjusted) {
+              return ptr;
+            }
           }
         }
         return adjusted;
@@ -1870,7 +1873,7 @@ function copyTempDouble(ptr) {
       for (var i = 0; i < typeArray.length; i++) {
         if (typeArray[i] && Module['___cxa_can_catch'](typeArray[i], throwntype, thrown)) {
           thrown = HEAP32[((thrown)>>2)]; // undo indirection
-          info.adjusted = thrown;
+          info.adjusted.push(thrown);
           return ((setTempRet0(typeArray[i]),thrown)|0);
         }
       }
@@ -1882,7 +1885,7 @@ function copyTempDouble(ptr) {
     }function ___cxa_throw(ptr, type, destructor) {
       EXCEPTIONS.infos[ptr] = {
         ptr: ptr,
-        adjusted: ptr,
+        adjusted: [ptr],
         type: type,
         destructor: destructor,
         refcount: 0,
@@ -2968,7 +2971,6 @@ var _pthread_mutex_unlock = Module["_pthread_mutex_unlock"] = function() {  retu
 var _rk_exec = Module["_rk_exec"] = function() {  return Module["asm"]["_rk_exec"].apply(null, arguments) };
 var _sbrk = Module["_sbrk"] = function() {  return Module["asm"]["_sbrk"].apply(null, arguments) };
 var establishStackSpace = Module["establishStackSpace"] = function() {  return Module["asm"]["establishStackSpace"].apply(null, arguments) };
-var runPostSets = Module["runPostSets"] = function() {  return Module["asm"]["runPostSets"].apply(null, arguments) };
 var setThrew = Module["setThrew"] = function() {  return Module["asm"]["setThrew"].apply(null, arguments) };
 var stackAlloc = Module["stackAlloc"] = function() {  return Module["asm"]["stackAlloc"].apply(null, arguments) };
 var stackRestore = Module["stackRestore"] = function() {  return Module["asm"]["stackRestore"].apply(null, arguments) };

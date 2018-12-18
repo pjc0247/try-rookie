@@ -263,8 +263,7 @@ function dynamicAlloc(size) {
 
 function alignMemory(size, factor) {
   if (!factor) factor = STACK_ALIGN; // stack alignment (16-byte) by default
-  var ret = size = Math.ceil(size / factor) * factor;
-  return ret;
+  return Math.ceil(size / factor) * factor;
 }
 
 function getNativeTypeSize(type) {
@@ -310,6 +309,16 @@ var asm2wasmImports = { // special asm2wasm imports
 
 var jsCallStartIndex = 1;
 var functionPointers = new Array(0);
+
+// Add a wasm function to the table.
+// Attempting to call this with JS function will cause of table.set() to fail
+function addWasmFunction(func) {
+  var table = Module['wasmTable'];
+  var ret = table.length;
+  table.grow(1);
+  table.set(ret, func);
+  return ret;
+}
 
 // 'sig' parameter is only used on LLVM wasm backend
 function addFunction(func, sig) {
@@ -1597,7 +1606,6 @@ function integrateWasmJS() {
     // import table
     if (!env['table']) {
       var TABLE_SIZE = Module['wasmTableSize'];
-      if (TABLE_SIZE === undefined) TABLE_SIZE = 1024; // works in binaryen interpreter at least
       var MAX_TABLE_SIZE = Module['wasmMaxTableSize'];
       if (typeof WebAssembly === 'object' && typeof WebAssembly.Table === 'function') {
         if (MAX_TABLE_SIZE !== undefined) {
@@ -1644,7 +1652,7 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 66128;
+STATICTOP = STATIC_BASE + 66528;
 /* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__sub_I_main_cpp() } }, { func: function() { ___emscripten_environ_constructor() } }, { func: function() { __GLOBAL__sub_I_json_cpp() } }, { func: function() { __GLOBAL__sub_I_object_cpp() } }, { func: function() { __GLOBAL__sub_I_dictionary_cpp() } }, { func: function() { __GLOBAL__sub_I_type_cpp() } }, { func: function() { __GLOBAL__sub_I_string_cpp() } }, { func: function() { __GLOBAL__sub_I_array_cpp() } }, { func: function() { __GLOBAL__sub_I_loop_node_cpp() } }, { func: function() { __GLOBAL__sub_I_oop_fundamental_node_cpp() } }, { func: function() { __GLOBAL__sub_I_basic_node_cpp() } }, { func: function() { __GLOBAL__sub_I_try_catch_node_cpp() } }, { func: function() { __GLOBAL__sub_I_syntax_node_cpp() } }, { func: function() { __GLOBAL__sub_I_debugger_cpp() } }, { func: function() { __GLOBAL__sub_I_sexper_cpp() } }, { func: function() { __GLOBAL__sub_I_exe_context_cpp() } }, { func: function() { __GLOBAL__sub_I_lexer_cpp() } }, { func: function() { __GLOBAL__sub_I_c_interface_cpp() } }, { func: function() { __GLOBAL__sub_I_sig2hash_cpp() } }, { func: function() { __GLOBAL__sub_I_stdafx_cpp() } }, { func: function() { __GLOBAL__sub_I_compiler_cpp() } }, { func: function() { __GLOBAL__sub_I_runner_cpp() } }, { func: function() { __GLOBAL__sub_I_value_cpp() } }, { func: function() { __GLOBAL__sub_I_binding_cpp() } }, { func: function() { __GLOBAL__sub_I_gc_cpp() } });
 
 
@@ -1653,7 +1661,7 @@ STATICTOP = STATIC_BASE + 66128;
 
 
 
-var STATIC_BUMP = 66128;
+var STATIC_BUMP = 66528;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 
@@ -3102,7 +3110,6 @@ function ExitStatus(status) {
 ExitStatus.prototype = new Error();
 ExitStatus.prototype.constructor = ExitStatus;
 
-var initialStackTop;
 var calledMain = false;
 
 dependenciesFulfilled = function runCaller() {
@@ -3175,7 +3182,6 @@ function exit(status, implicit) {
 
     ABORT = true;
     EXITSTATUS = status;
-    STACKTOP = initialStackTop;
 
     exitRuntime();
 

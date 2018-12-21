@@ -320,8 +320,10 @@ function addWasmFunction(func) {
   return ret;
 }
 
-// 'sig' parameter is only used on LLVM wasm backend
+// 'sig' parameter is currently only used for LLVM backend under certain
+// circumstance: RESERVED_FUNCTION_POINTERS=1, EMULATED_FUNCTION_POINTERS=0.
 function addFunction(func, sig) {
+
   var base = 0;
   for (var i = base; i < base + 0; i++) {
     if (!functionPointers[i]) {
@@ -330,6 +332,7 @@ function addFunction(func, sig) {
     }
   }
   throw 'Finished up all reserved function pointers. Use a higher value for RESERVED_FUNCTION_POINTERS.';
+
 }
 
 function removeFunction(index) {
@@ -3029,6 +3032,8 @@ Module["cwrap"] = cwrap;
 
 
 Module["allocate"] = allocate;
+
+
 
 
 

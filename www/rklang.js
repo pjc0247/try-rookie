@@ -304,7 +304,7 @@ var functionPointers = new Array(0);
 // Add a wasm function to the table.
 // Attempting to call this with JS function will cause of table.set() to fail
 function addWasmFunction(func) {
-  var table = Module['wasmTable'];
+  var table = wasmTable;
   var ret = table.length;
   table.grow(1);
   table.set(ret, func);
@@ -408,8 +408,20 @@ var GLOBAL_BASE = 1024;
 //    is up at http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html
 
 
+if (typeof WebAssembly !== 'object') {
+  err('no native wasm support detected');
+}
 
 
+
+
+
+// Wasm globals
+
+var wasmMemory;
+
+// Potentially used for direct table calls.
+var wasmTable;
 
 
 //========================================
@@ -478,7 +490,7 @@ var toC = {
 // C calling interface.
 function ccall(ident, returnType, argTypes, args, opts) {
   function convertReturnValue(ret) {
-    if (returnType === 'string') return Pointer_stringify(ret);
+    if (returnType === 'string') return UTF8ToString(ret);
     if (returnType === 'boolean') return Boolean(ret);
     return ret;
   }
@@ -741,7 +753,7 @@ function UTF8ArrayToString(u8Array, idx) {
 // a copy of that string as a Javascript String object.
 
 function UTF8ToString(ptr) {
-  return UTF8ArrayToString(HEAPU8,ptr);
+  return ptr ? UTF8ArrayToString(HEAPU8,ptr) : '';
 }
 
 // Copies the given Javascript String object 'str' to the given byte array at address 'outIdx',
@@ -814,19 +826,10 @@ function lengthBytesUTF8(str) {
     // See http://unicode.org/faq/utf_bom.html#utf16-3
     var u = str.charCodeAt(i); // possibly a lead surrogate
     if (u >= 0xD800 && u <= 0xDFFF) u = 0x10000 + ((u & 0x3FF) << 10) | (str.charCodeAt(++i) & 0x3FF);
-    if (u <= 0x7F) {
-      ++len;
-    } else if (u <= 0x7FF) {
-      len += 2;
-    } else if (u <= 0xFFFF) {
-      len += 3;
-    } else if (u <= 0x1FFFFF) {
-      len += 4;
-    } else if (u <= 0x3FFFFFF) {
-      len += 5;
-    } else {
-      len += 6;
-    }
+    if (u <= 0x7F) ++len;
+    else if (u <= 0x7FF) len += 2;
+    else if (u <= 0xFFFF) len += 3;
+    else len += 4;
   }
   return len;
 }
@@ -1108,19 +1111,15 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 67936,
+    STACK_BASE = 67952,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5310816,
-    DYNAMIC_BASE = 5310816,
-    DYNAMICTOP_PTR = 67680;
+    STACK_MAX = 5310832,
+    DYNAMIC_BASE = 5310832,
+    DYNAMICTOP_PTR = 67696;
 
 
 
 
-
-function abortOnCannotGrowMemory() {
-  abort('Cannot enlarge memory arrays. Either (1) compile with  -s TOTAL_MEMORY=X  with X higher than the current value ' + TOTAL_MEMORY + ', (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ');
-}
 
 
 
@@ -1143,8 +1142,8 @@ if (Module['buffer']) {
 } else {
   // Use a WebAssembly memory where available
   if (typeof WebAssembly === 'object' && typeof WebAssembly.Memory === 'function') {
-    Module['wasmMemory'] = new WebAssembly.Memory({ 'initial': TOTAL_MEMORY / WASM_PAGE_SIZE, 'maximum': TOTAL_MEMORY / WASM_PAGE_SIZE });
-    buffer = Module['wasmMemory'].buffer;
+    wasmMemory = new WebAssembly.Memory({ 'initial': TOTAL_MEMORY / WASM_PAGE_SIZE, 'maximum': TOTAL_MEMORY / WASM_PAGE_SIZE });
+    buffer = wasmMemory.buffer;
   } else
   {
     buffer = new ArrayBuffer(TOTAL_MEMORY);
@@ -1428,25 +1427,16 @@ function getBinaryPromise() {
 // Create the wasm instance.
 // Receives the wasm imports, returns the exports.
 function createWasm(env) {
-  if (typeof WebAssembly !== 'object') {
-    err('no native wasm support detected');
-    return false;
-  }
   // prepare imports
-  if (!(Module['wasmMemory'] instanceof WebAssembly.Memory)) {
-    err('no native wasm Memory in use');
-    return false;
-  }
-  env['memory'] = Module['wasmMemory'];
   var info = {
+    'env': env
+    ,
     'global': {
       'NaN': NaN,
       'Infinity': Infinity
     },
     'global.Math': Math,
-    'env': env,
-    'asm2wasm': asm2wasmImports,
-    'parent': Module // Module inside wasm-js.cpp refers to wasm-js.cpp; this allows access to the outside program.
+    'asm2wasm': asm2wasmImports
   };
   // Load the wasm module and create an instance of using native support in the JS engine.
   // handle a generated wasm instance, receiving its exports and
@@ -1514,10 +1504,10 @@ var wasmReallocBuffer = function(size) {
   var oldSize = old.byteLength;
   // native wasm support
   try {
-    var result = Module['wasmMemory'].grow((size - oldSize) / 65536); // .grow() takes a delta compared to the previous size
+    var result = wasmMemory.grow((size - oldSize) / 65536); // .grow() takes a delta compared to the previous size
     if (result !== (-1 | 0)) {
       // success in native wasm memory growth, get the buffer from the memory
-      return Module['buffer'] = Module['wasmMemory'].buffer;
+      return Module['buffer'] = wasmMemory.buffer;
     } else {
       return null;
     }
@@ -1535,32 +1525,18 @@ Module['reallocBuffer'] = function(size) {
 // doesn't need to care that it is wasm or asm.js.
 
 Module['asm'] = function(global, env, providedBuffer) {
+  // memory was already allocated (so js could use the buffer)
+  env['memory'] = wasmMemory;
   // import table
-  if (!env['table']) {
-    var TABLE_SIZE = Module['wasmTableSize'];
-    var MAX_TABLE_SIZE = Module['wasmMaxTableSize'];
-    if (typeof WebAssembly === 'object' && typeof WebAssembly.Table === 'function') {
-      if (MAX_TABLE_SIZE !== undefined) {
-        env['table'] = new WebAssembly.Table({ 'initial': TABLE_SIZE, 'maximum': MAX_TABLE_SIZE, 'element': 'anyfunc' });
-      } else {
-        env['table'] = new WebAssembly.Table({ 'initial': TABLE_SIZE, element: 'anyfunc' });
-      }
-    } else {
-      env['table'] = new Array(TABLE_SIZE); // works in binaryen interpreter at least
-    }
-    Module['wasmTable'] = env['table'];
-  }
-
-  if (!env['__memory_base']) {
-    env['__memory_base'] = Module['STATIC_BASE']; // tell the memory segments where to place themselves
-  }
-  if (!env['__table_base']) {
-    env['__table_base'] = 0; // table starts at 0 by default, in dynamic linking this will change
-  }
+  env['table'] = wasmTable = new WebAssembly.Table({
+    'initial': 2254,
+    'maximum': 2254,
+    'element': 'anyfunc'
+  });
+  env['__memory_base'] = 1024; // tell the memory segments where to place themselves
+  env['__table_base'] = 0; // table starts at 0 by default (even in dynamic linking, for the main module)
 
   var exports = createWasm(env);
-
-
   return exports;
 };
 
@@ -1572,9 +1548,7 @@ var ASM_CONSTS = [];
 
 
 
-STATIC_BASE = GLOBAL_BASE;
-
-// STATICTOP = STATIC_BASE + 66912;
+// STATICTOP = STATIC_BASE + 66928;
 /* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__sub_I_main_cpp() } }, { func: function() { ___emscripten_environ_constructor() } }, { func: function() { __GLOBAL__sub_I_json_cpp() } }, { func: function() { __GLOBAL__sub_I_object_cpp() } }, { func: function() { __GLOBAL__sub_I_dictionary_cpp() } }, { func: function() { __GLOBAL__sub_I_type_cpp() } }, { func: function() { __GLOBAL__sub_I_string_cpp() } }, { func: function() { __GLOBAL__sub_I_array_cpp() } }, { func: function() { __GLOBAL__sub_I_loop_node_cpp() } }, { func: function() { __GLOBAL__sub_I_oop_fundamental_node_cpp() } }, { func: function() { __GLOBAL__sub_I_basic_node_cpp() } }, { func: function() { __GLOBAL__sub_I_try_catch_node_cpp() } }, { func: function() { __GLOBAL__sub_I_syntax_node_cpp() } }, { func: function() { __GLOBAL__sub_I_debugger_cpp() } }, { func: function() { __GLOBAL__sub_I_sexper_cpp() } }, { func: function() { __GLOBAL__sub_I_exe_context_cpp() } }, { func: function() { __GLOBAL__sub_I_lexer_cpp() } }, { func: function() { __GLOBAL__sub_I_c_interface_cpp() } }, { func: function() { __GLOBAL__sub_I_sig2hash_cpp() } }, { func: function() { __GLOBAL__sub_I_stdafx_cpp() } }, { func: function() { __GLOBAL__sub_I_compiler_cpp() } }, { func: function() { __GLOBAL__sub_I_runner_cpp() } }, { func: function() { __GLOBAL__sub_I_value_cpp() } }, { func: function() { __GLOBAL__sub_I_binding_cpp() } }, { func: function() { __GLOBAL__sub_I_gc_cpp() } });
 
 
@@ -1583,12 +1557,9 @@ STATIC_BASE = GLOBAL_BASE;
 
 
 
-var STATIC_BUMP = 66912;
-Module["STATIC_BASE"] = STATIC_BASE;
-Module["STATIC_BUMP"] = STATIC_BUMP;
 
 /* no memory initializer */
-var tempDoublePtr = 67920
+var tempDoublePtr = 67936
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
   HEAP8[tempDoublePtr] = HEAP8[ptr];
@@ -1731,9 +1702,10 @@ function copyTempDouble(ptr) {
       return ptr;
     }
 
-  function ___cxa_end_catch() {
+  
+   function ___cxa_end_catch() {
       // Clear state flag.
-      Module['setThrew'](0);
+      _setThrew(0);
       // Call destructor if one is registered then clear it.
       var ptr = EXCEPTIONS.caught.pop();
       if (ptr) {
@@ -1994,8 +1966,11 @@ function copyTempDouble(ptr) {
       return TOTAL_MEMORY;
     }
 
-  function _emscripten_resize_heap(requestedSize) {
-      abortOnCannotGrowMemory();
+  
+  function abortOnCannotGrowMemory(requestedSize) {
+      abort('Cannot enlarge memory arrays to size ' + requestedSize + ' bytes. Either (1) compile with  -s TOTAL_MEMORY=X  with X higher than the current value ' + TOTAL_MEMORY + ', (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ');
+    }function _emscripten_resize_heap(requestedSize) {
+      abortOnCannotGrowMemory(requestedSize);
     }
 
   function _getenv(name) {
@@ -2037,10 +2012,10 @@ function copyTempDouble(ptr) {
     }
 
   
-  var ___tm_current=67776;
+  var ___tm_current=67792;
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 67824, 4), 67824);
+  var ___tm_timezone=(stringToUTF8("GMT", 67840, 4), 67840);
   
   function _tzset() {
       // TODO: Use (malleable) environment variables instead of system settings.
@@ -2545,10 +2520,6 @@ function intArrayToString(array) {
 
 
 
-Module['wasmTableSize'] = 2254;
-
-Module['wasmMaxTableSize'] = 2254;
-
 function invoke_dii(index,a1,a2) {
   var sp = stackSave();
   try {
@@ -2556,7 +2527,7 @@ function invoke_dii(index,a1,a2) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2567,7 +2538,7 @@ function invoke_diii(index,a1,a2,a3) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2578,7 +2549,7 @@ function invoke_fiii(index,a1,a2,a3) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2589,7 +2560,7 @@ function invoke_i(index) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2600,7 +2571,7 @@ function invoke_ii(index,a1) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2611,7 +2582,7 @@ function invoke_iidi(index,a1,a2,a3) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2622,7 +2593,7 @@ function invoke_iii(index,a1,a2) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2633,7 +2604,7 @@ function invoke_iiii(index,a1,a2,a3) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2644,7 +2615,7 @@ function invoke_iiiii(index,a1,a2,a3,a4) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2655,7 +2626,7 @@ function invoke_iiiiii(index,a1,a2,a3,a4,a5) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2666,7 +2637,7 @@ function invoke_iiiiiii(index,a1,a2,a3,a4,a5,a6) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2677,7 +2648,7 @@ function invoke_iiiiiiii(index,a1,a2,a3,a4,a5,a6,a7) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2688,7 +2659,7 @@ function invoke_iiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2699,7 +2670,7 @@ function invoke_iiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2710,7 +2681,7 @@ function invoke_iiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2721,7 +2692,7 @@ function invoke_iiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2732,7 +2703,7 @@ function invoke_iij(index,a1,a2,a3) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2743,7 +2714,7 @@ function invoke_jiiii(index,a1,a2,a3,a4) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2754,7 +2725,7 @@ function invoke_v(index) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2765,7 +2736,7 @@ function invoke_vi(index,a1) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2776,7 +2747,7 @@ function invoke_vii(index,a1,a2) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2787,7 +2758,7 @@ function invoke_viii(index,a1,a2,a3) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2798,7 +2769,7 @@ function invoke_viiii(index,a1,a2,a3,a4) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2809,7 +2780,7 @@ function invoke_viiiii(index,a1,a2,a3,a4,a5) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2820,7 +2791,7 @@ function invoke_viiiiiii(index,a1,a2,a3,a4,a5,a6,a7) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2831,7 +2802,7 @@ function invoke_viiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) {
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
@@ -2842,13 +2813,13 @@ function invoke_viiiiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a1
   } catch(e) {
     stackRestore(sp);
     if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
+    _setThrew(1, 0);
   }
 }
 
 var asmGlobalArg = {}
 
-Module.asmLibraryArg = { "abort": abort, "assert": assert, "setTempRet0": setTempRet0, "getTempRet0": getTempRet0, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "invoke_dii": invoke_dii, "invoke_diii": invoke_diii, "invoke_fiii": invoke_fiii, "invoke_i": invoke_i, "invoke_ii": invoke_ii, "invoke_iidi": invoke_iidi, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiii": invoke_iiiiii, "invoke_iiiiiii": invoke_iiiiiii, "invoke_iiiiiiii": invoke_iiiiiiii, "invoke_iiiiiiiii": invoke_iiiiiiiii, "invoke_iiiiiiiiiii": invoke_iiiiiiiiiii, "invoke_iiiiiiiiiiii": invoke_iiiiiiiiiiii, "invoke_iiiiiiiiiiiii": invoke_iiiiiiiiiiiii, "invoke_iij": invoke_iij, "invoke_jiiii": invoke_jiiii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_viii": invoke_viii, "invoke_viiii": invoke_viiii, "invoke_viiiii": invoke_viiiii, "invoke_viiiiiii": invoke_viiiiiii, "invoke_viiiiiiiiii": invoke_viiiiiiiiii, "invoke_viiiiiiiiiiiiiii": invoke_viiiiiiiiiiiiiii, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___assert_fail": ___assert_fail, "___buildEnvironment": ___buildEnvironment, "___cxa_allocate_exception": ___cxa_allocate_exception, "___cxa_begin_catch": ___cxa_begin_catch, "___cxa_end_catch": ___cxa_end_catch, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_find_matching_catch_2": ___cxa_find_matching_catch_2, "___cxa_find_matching_catch_3": ___cxa_find_matching_catch_3, "___cxa_find_matching_catch_6": ___cxa_find_matching_catch_6, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___cxa_rethrow": ___cxa_rethrow, "___cxa_throw": ___cxa_throw, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___map_file": ___map_file, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___syscall91": ___syscall91, "___unlock": ___unlock, "__addDays": __addDays, "__arraySum": __arraySum, "__isLeapYear": __isLeapYear, "_abort": _abort, "_clock_gettime": _clock_gettime, "_emscripten_get_heap_size": _emscripten_get_heap_size, "_emscripten_get_now": _emscripten_get_now, "_emscripten_get_now_is_monotonic": _emscripten_get_now_is_monotonic, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_emscripten_resize_heap": _emscripten_resize_heap, "_getenv": _getenv, "_llvm_eh_typeid_for": _llvm_eh_typeid_for, "_llvm_stackrestore": _llvm_stackrestore, "_llvm_stacksave": _llvm_stacksave, "_llvm_trap": _llvm_trap, "_localtime": _localtime, "_localtime_r": _localtime_r, "_pthread_cond_wait": _pthread_cond_wait, "_pthread_getspecific": _pthread_getspecific, "_pthread_key_create": _pthread_key_create, "_pthread_once": _pthread_once, "_pthread_setspecific": _pthread_setspecific, "_strftime": _strftime, "_strftime_l": _strftime_l, "_tzset": _tzset, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr };
+Module.asmLibraryArg = { "abort": abort, "assert": assert, "setTempRet0": setTempRet0, "getTempRet0": getTempRet0, "invoke_dii": invoke_dii, "invoke_diii": invoke_diii, "invoke_fiii": invoke_fiii, "invoke_i": invoke_i, "invoke_ii": invoke_ii, "invoke_iidi": invoke_iidi, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiii": invoke_iiiiii, "invoke_iiiiiii": invoke_iiiiiii, "invoke_iiiiiiii": invoke_iiiiiiii, "invoke_iiiiiiiii": invoke_iiiiiiiii, "invoke_iiiiiiiiiii": invoke_iiiiiiiiiii, "invoke_iiiiiiiiiiii": invoke_iiiiiiiiiiii, "invoke_iiiiiiiiiiiii": invoke_iiiiiiiiiiiii, "invoke_iij": invoke_iij, "invoke_jiiii": invoke_jiiii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_viii": invoke_viii, "invoke_viiii": invoke_viiii, "invoke_viiiii": invoke_viiiii, "invoke_viiiiiii": invoke_viiiiiii, "invoke_viiiiiiiiii": invoke_viiiiiiiiii, "invoke_viiiiiiiiiiiiiii": invoke_viiiiiiiiiiiiiii, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___assert_fail": ___assert_fail, "___buildEnvironment": ___buildEnvironment, "___cxa_allocate_exception": ___cxa_allocate_exception, "___cxa_begin_catch": ___cxa_begin_catch, "___cxa_end_catch": ___cxa_end_catch, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_find_matching_catch_2": ___cxa_find_matching_catch_2, "___cxa_find_matching_catch_3": ___cxa_find_matching_catch_3, "___cxa_find_matching_catch_6": ___cxa_find_matching_catch_6, "___cxa_free_exception": ___cxa_free_exception, "___cxa_pure_virtual": ___cxa_pure_virtual, "___cxa_rethrow": ___cxa_rethrow, "___cxa_throw": ___cxa_throw, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___map_file": ___map_file, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___syscall91": ___syscall91, "___unlock": ___unlock, "__addDays": __addDays, "__arraySum": __arraySum, "__isLeapYear": __isLeapYear, "_abort": _abort, "_clock_gettime": _clock_gettime, "_emscripten_get_heap_size": _emscripten_get_heap_size, "_emscripten_get_now": _emscripten_get_now, "_emscripten_get_now_is_monotonic": _emscripten_get_now_is_monotonic, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_emscripten_resize_heap": _emscripten_resize_heap, "_getenv": _getenv, "_llvm_eh_typeid_for": _llvm_eh_typeid_for, "_llvm_stackrestore": _llvm_stackrestore, "_llvm_stacksave": _llvm_stacksave, "_llvm_trap": _llvm_trap, "_localtime": _localtime, "_localtime_r": _localtime_r, "_pthread_cond_wait": _pthread_cond_wait, "_pthread_getspecific": _pthread_getspecific, "_pthread_key_create": _pthread_key_create, "_pthread_once": _pthread_once, "_pthread_setspecific": _pthread_setspecific, "_strftime": _strftime, "_strftime_l": _strftime_l, "_tzset": _tzset, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr };
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (asmGlobalArg, Module.asmLibraryArg, buffer);
@@ -2895,8 +2866,8 @@ var _pthread_mutex_lock = Module["_pthread_mutex_lock"] = function() {  return M
 var _pthread_mutex_unlock = Module["_pthread_mutex_unlock"] = function() {  return Module["asm"]["_pthread_mutex_unlock"].apply(null, arguments) };
 var _rk_exec = Module["_rk_exec"] = function() {  return Module["asm"]["_rk_exec"].apply(null, arguments) };
 var _sbrk = Module["_sbrk"] = function() {  return Module["asm"]["_sbrk"].apply(null, arguments) };
+var _setThrew = Module["_setThrew"] = function() {  return Module["asm"]["_setThrew"].apply(null, arguments) };
 var establishStackSpace = Module["establishStackSpace"] = function() {  return Module["asm"]["establishStackSpace"].apply(null, arguments) };
-var setThrew = Module["setThrew"] = function() {  return Module["asm"]["setThrew"].apply(null, arguments) };
 var stackAlloc = Module["stackAlloc"] = function() {  return Module["asm"]["stackAlloc"].apply(null, arguments) };
 var stackRestore = Module["stackRestore"] = function() {  return Module["asm"]["stackRestore"].apply(null, arguments) };
 var stackSave = Module["stackSave"] = function() {  return Module["asm"]["stackSave"].apply(null, arguments) };

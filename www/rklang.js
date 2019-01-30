@@ -1121,8 +1121,6 @@ var STATIC_BASE = 1024,
 
 
 
-
-
 var TOTAL_STACK = 5242880;
 
 var TOTAL_MEMORY = Module['TOTAL_MEMORY'] || 16777216;
@@ -1495,31 +1493,6 @@ function createWasm(env) {
   return {}; // no exports yet; we'll fill them in later
 }
 
-// Memory growth integration code
-
-var wasmReallocBuffer = function(size) {
-  var PAGE_MULTIPLE = 65536;
-  size = alignUp(size, PAGE_MULTIPLE); // round up to wasm page size
-  var old = Module['buffer'];
-  var oldSize = old.byteLength;
-  // native wasm support
-  try {
-    var result = wasmMemory.grow((size - oldSize) / 65536); // .grow() takes a delta compared to the previous size
-    if (result !== (-1 | 0)) {
-      // success in native wasm memory growth, get the buffer from the memory
-      return Module['buffer'] = wasmMemory.buffer;
-    } else {
-      return null;
-    }
-  } catch(e) {
-    return null;
-  }
-};
-
-Module['reallocBuffer'] = function(size) {
-  return wasmReallocBuffer(size);
-};
-
 // Provide an "asm.js function" for the application, called to "link" the asm.js module. We instantiate
 // the wasm module at that time, and it receives imports and provides exports and so forth, the app
 // doesn't need to care that it is wasm or asm.js.
@@ -1549,7 +1522,7 @@ var ASM_CONSTS = [];
 
 
 // STATICTOP = STATIC_BASE + 66928;
-/* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__sub_I_main_cpp() } }, { func: function() { ___emscripten_environ_constructor() } }, { func: function() { __GLOBAL__sub_I_json_cpp() } }, { func: function() { __GLOBAL__sub_I_object_cpp() } }, { func: function() { __GLOBAL__sub_I_dictionary_cpp() } }, { func: function() { __GLOBAL__sub_I_type_cpp() } }, { func: function() { __GLOBAL__sub_I_string_cpp() } }, { func: function() { __GLOBAL__sub_I_array_cpp() } }, { func: function() { __GLOBAL__sub_I_loop_node_cpp() } }, { func: function() { __GLOBAL__sub_I_oop_fundamental_node_cpp() } }, { func: function() { __GLOBAL__sub_I_basic_node_cpp() } }, { func: function() { __GLOBAL__sub_I_try_catch_node_cpp() } }, { func: function() { __GLOBAL__sub_I_syntax_node_cpp() } }, { func: function() { __GLOBAL__sub_I_debugger_cpp() } }, { func: function() { __GLOBAL__sub_I_sexper_cpp() } }, { func: function() { __GLOBAL__sub_I_exe_context_cpp() } }, { func: function() { __GLOBAL__sub_I_lexer_cpp() } }, { func: function() { __GLOBAL__sub_I_c_interface_cpp() } }, { func: function() { __GLOBAL__sub_I_sig2hash_cpp() } }, { func: function() { __GLOBAL__sub_I_stdafx_cpp() } }, { func: function() { __GLOBAL__sub_I_compiler_cpp() } }, { func: function() { __GLOBAL__sub_I_runner_cpp() } }, { func: function() { __GLOBAL__sub_I_value_cpp() } }, { func: function() { __GLOBAL__sub_I_binding_cpp() } }, { func: function() { __GLOBAL__sub_I_gc_cpp() } });
+/* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
 
@@ -2825,33 +2798,8 @@ var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (asmGlobalArg, Module.asmLibraryArg, buffer);
 
 Module["asm"] = asm;
-var __GLOBAL__sub_I_array_cpp = Module["__GLOBAL__sub_I_array_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_array_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_basic_node_cpp = Module["__GLOBAL__sub_I_basic_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_basic_node_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_binding_cpp = Module["__GLOBAL__sub_I_binding_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_binding_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_c_interface_cpp = Module["__GLOBAL__sub_I_c_interface_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_c_interface_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_compiler_cpp = Module["__GLOBAL__sub_I_compiler_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_compiler_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_debugger_cpp = Module["__GLOBAL__sub_I_debugger_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_debugger_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_dictionary_cpp = Module["__GLOBAL__sub_I_dictionary_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_dictionary_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_exe_context_cpp = Module["__GLOBAL__sub_I_exe_context_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_exe_context_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_gc_cpp = Module["__GLOBAL__sub_I_gc_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_gc_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_json_cpp = Module["__GLOBAL__sub_I_json_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_json_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_lexer_cpp = Module["__GLOBAL__sub_I_lexer_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_lexer_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_loop_node_cpp = Module["__GLOBAL__sub_I_loop_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_loop_node_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_main_cpp = Module["__GLOBAL__sub_I_main_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_main_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_object_cpp = Module["__GLOBAL__sub_I_object_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_object_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_oop_fundamental_node_cpp = Module["__GLOBAL__sub_I_oop_fundamental_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_oop_fundamental_node_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_runner_cpp = Module["__GLOBAL__sub_I_runner_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_runner_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_sexper_cpp = Module["__GLOBAL__sub_I_sexper_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_sexper_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_sig2hash_cpp = Module["__GLOBAL__sub_I_sig2hash_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_sig2hash_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_stdafx_cpp = Module["__GLOBAL__sub_I_stdafx_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_stdafx_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_string_cpp = Module["__GLOBAL__sub_I_string_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_string_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_syntax_node_cpp = Module["__GLOBAL__sub_I_syntax_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_syntax_node_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_try_catch_node_cpp = Module["__GLOBAL__sub_I_try_catch_node_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_try_catch_node_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_type_cpp = Module["__GLOBAL__sub_I_type_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_type_cpp"].apply(null, arguments) };
-var __GLOBAL__sub_I_value_cpp = Module["__GLOBAL__sub_I_value_cpp"] = function() {  return Module["asm"]["__GLOBAL__sub_I_value_cpp"].apply(null, arguments) };
 var ___cxa_can_catch = Module["___cxa_can_catch"] = function() {  return Module["asm"]["___cxa_can_catch"].apply(null, arguments) };
 var ___cxa_is_pointer_type = Module["___cxa_is_pointer_type"] = function() {  return Module["asm"]["___cxa_is_pointer_type"].apply(null, arguments) };
-var ___emscripten_environ_constructor = Module["___emscripten_environ_constructor"] = function() {  return Module["asm"]["___emscripten_environ_constructor"].apply(null, arguments) };
 var __get_daylight = Module["__get_daylight"] = function() {  return Module["asm"]["__get_daylight"].apply(null, arguments) };
 var __get_timezone = Module["__get_timezone"] = function() {  return Module["asm"]["__get_timezone"].apply(null, arguments) };
 var __get_tzname = Module["__get_tzname"] = function() {  return Module["asm"]["__get_tzname"].apply(null, arguments) };
@@ -2868,6 +2816,7 @@ var _rk_exec = Module["_rk_exec"] = function() {  return Module["asm"]["_rk_exec
 var _sbrk = Module["_sbrk"] = function() {  return Module["asm"]["_sbrk"].apply(null, arguments) };
 var _setThrew = Module["_setThrew"] = function() {  return Module["asm"]["_setThrew"].apply(null, arguments) };
 var establishStackSpace = Module["establishStackSpace"] = function() {  return Module["asm"]["establishStackSpace"].apply(null, arguments) };
+var globalCtors = Module["globalCtors"] = function() {  return Module["asm"]["globalCtors"].apply(null, arguments) };
 var stackAlloc = Module["stackAlloc"] = function() {  return Module["asm"]["stackAlloc"].apply(null, arguments) };
 var stackRestore = Module["stackRestore"] = function() {  return Module["asm"]["stackRestore"].apply(null, arguments) };
 var stackSave = Module["stackSave"] = function() {  return Module["asm"]["stackSave"].apply(null, arguments) };

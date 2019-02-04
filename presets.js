@@ -93,7 +93,7 @@ class object_test {
 `,
     monkey_patch: `class string {
     def boo() {
-        puts "BOOOOOOO";
+        puts("BOOOOOOO");
     }
 }
 class monkey_patch {

@@ -90,6 +90,18 @@ class object_test {
         puts (json.stringify(o));
     }
 }
+`,
+    monkey_patch: `class string {
+    def boo() {
+        puts "BOOOOOOO";
+    }
+}
+class monkey_patch {
+    @main
+    static def main() {
+        "HEY".boo();
+    }
+}
 `
 }
 

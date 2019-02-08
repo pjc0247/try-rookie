@@ -56,10 +56,14 @@ ENVIRONMENT_IS_NODE = typeof process === 'object' && typeof require === 'functio
 ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
 
 
+
 // Three configurations we can be running in:
 // 1) We could be the application main() thread running in the main JS UI thread. (ENVIRONMENT_IS_WORKER == false and ENVIRONMENT_IS_PTHREAD == false)
 // 2) We could be the application main() thread proxied to worker. (with Emscripten -s PROXY_TO_WORKER=1) (ENVIRONMENT_IS_WORKER == true, ENVIRONMENT_IS_PTHREAD == false)
 // 3) We could be an application pthread running in a worker. (ENVIRONMENT_IS_WORKER == true and ENVIRONMENT_IS_PTHREAD == true)
+
+
+
 
 // `/` should be present at the end if `scriptDirectory` is not empty
 var scriptDirectory = '';
@@ -391,6 +395,8 @@ var Runtime = {
 // Then the stack.
 // Then 'dynamic' memory for sbrk.
 var GLOBAL_BASE = 1024;
+
+
 
 
 // === Preamble library stuff ===
@@ -1099,7 +1105,6 @@ var STATIC_BASE = 1024,
 
 
 
-
 var TOTAL_STACK = 5242880;
 
 var TOTAL_MEMORY = Module['TOTAL_MEMORY'] || 16777216;
@@ -1459,7 +1464,8 @@ function createWasm(env) {
 
 Module['asm'] = function(global, env, providedBuffer) {
   // memory was already allocated (so js could use the buffer)
-  env['memory'] = wasmMemory;
+  env['memory'] = wasmMemory
+  ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
     'initial': 2254,
@@ -2012,7 +2018,11 @@ function copyTempDouble(ptr) {
   
   function _emscripten_memcpy_big(dest, src, num) {
       HEAPU8.set(HEAPU8.subarray(src, src+num), dest);
-    } 
+    }
+  
+  var _Int8Array=undefined;
+  
+  var _Int32Array=undefined; 
 
    
 
@@ -2448,6 +2458,8 @@ function intArrayToString(array) {
   return ret.join('');
 }
 
+
+// ASM_LIBRARY EXTERN PRIMITIVES: Int8Array,Int32Array
 
 
 function invoke_dii(index,a1,a2) {

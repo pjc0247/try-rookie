@@ -1652,6 +1652,8 @@ function copyTempDouble(ptr) {
         ENV['PWD'] = '/';
         ENV['HOME'] = '/home/web_user';
         ENV['LANG'] = 'C.UTF-8';
+        // Browser language detection #8751
+        ENV['LANG'] = ((typeof navigator === 'object' && navigator.languages && navigator.languages[0]) || 'C').replace('-', '_') + '.UTF-8';
         ENV['_'] = Module['thisProgram'];
         // Allocate memory.
         poolPtr = getMemory(TOTAL_ENV_SIZE);
@@ -2024,10 +2026,11 @@ function copyTempDouble(ptr) {
   }
   }
 
-  function ___syscall91(which, varargs) {SYSCALLS.varargs = varargs;
-  try {
-   // munmap
-      var addr = SYSCALLS.get(), len = SYSCALLS.get();
+  
+  function __emscripten_syscall_munmap(addr, len) {
+      if (addr == -1 || len == 0) {
+        return -22;
+      }
       // TODO: support unmmap'ing parts of allocations
       var info = SYSCALLS.mappings[addr];
       if (!info) return 0;
@@ -2041,6 +2044,11 @@ function copyTempDouble(ptr) {
         }
       }
       return 0;
+    }function ___syscall91(which, varargs) {SYSCALLS.varargs = varargs;
+  try {
+   // munmap
+      var addr = SYSCALLS.get(), len = SYSCALLS.get();
+      return __emscripten_syscall_munmap(addr, len);
     } catch (e) {
     if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return -e.errno;
@@ -2979,6 +2987,7 @@ var asmLibraryArg = {
   "___unlock": ___unlock,
   "__addDays": __addDays,
   "__arraySum": __arraySum,
+  "__emscripten_syscall_munmap": __emscripten_syscall_munmap,
   "__isLeapYear": __isLeapYear,
   "_abort": _abort,
   "_clock_gettime": _clock_gettime,

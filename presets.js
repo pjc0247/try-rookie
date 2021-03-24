@@ -19,11 +19,12 @@ var presets = {
         a = "hello ";
         b = "world!";
 
-        # Also supports
-        # a += b;
         hello_world = a.append(b);
-
         puts (hello_world);
+
+        # You can also use `+` op.
+        # a += b;
+        puts("Hello" + "World");
     }
 }`,
 

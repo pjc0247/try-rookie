@@ -22,7 +22,7 @@ var presets = {
         hello_world = a.append(b);
         puts (hello_world);
 
-        # You can also use `+` op.
+        # You can also use + operator.
         # a += b;
         puts("Hello" + "World");
     }
